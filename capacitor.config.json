@@ -1,0 +1,6 @@
+{
+  "appId": "com.bhaskar18.medishelf",
+  "appName": "MediShelf",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}
