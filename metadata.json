@@ -1,0 +1,6 @@
+{
+  "name": "MediShelf",
+  "description": "Offline Pharmacy Shelf Locator & Inventory Management App",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": []
+}
