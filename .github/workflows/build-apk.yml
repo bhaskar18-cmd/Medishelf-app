@@ -45,16 +45,15 @@ jobs:
           MANIFEST_PATH="android/app/src/main/AndroidManifest.xml"
           if [ -f "$MANIFEST_PATH" ]; then
             echo "Injecting camera permissions into AndroidManifest.xml..."
-            # Insert uses-permission before <application
-            python3 -c '
+            python3 - << 'EOF'
             path = "android/app/src/main/AndroidManifest.xml"
             with open(path, "r") as f:
                 content = f.read()
-            perms = """
+            perms = '''
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
-"""
+'''
             if "android.permission.CAMERA" not in content:
                 content = content.replace("<application", perms + "\n    <application")
                 with open(path, "w") as f:
@@ -62,7 +61,7 @@ jobs:
                 print("Successfully added camera permissions.")
             else:
                 print("Camera permission already present.")
-            '
+            EOF
           fi
 
       - name: Build Debug APK with Gradle
