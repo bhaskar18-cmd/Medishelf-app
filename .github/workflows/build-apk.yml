@@ -64,19 +64,8 @@ jobs:
         run: |
           MAIN_ACTIVITY="android/app/src/main/java/com/bhaskar18/medishelf/MainActivity.java"
           if [ -f "$MAIN_ACTIVITY" ] && ! grep -q "FirebaseAuthenticationPlugin" "$MAIN_ACTIVITY"; then
-            python3 -c '
-path = "android/app/src/main/java/com/bhaskar18/medishelf/MainActivity.java"
-with open(path, "r") as f:
-    content = f.read()
-if "import android.os.Bundle;" not in content:
-    content = content.replace("import com.getcapacitor.BridgeActivity;", "import android.os.Bundle;\nimport com.getcapacitor.BridgeActivity;\nimport dev.robingenz.capacitorjs.plugins.firebase.authentication.FirebaseAuthenticationPlugin;")
-else:
-    content = content.replace("import com.getcapacitor.BridgeActivity;", "import com.getcapacitor.BridgeActivity;\nimport dev.robingenz.capacitorjs.plugins.firebase.authentication.FirebaseAuthenticationPlugin;")
-if "public class MainActivity extends BridgeActivity {" in content:
-    content = content.replace("public class MainActivity extends BridgeActivity {", "public class MainActivity extends BridgeActivity {\n    @Override\n    public void onCreate(Bundle savedInstanceState) {\n        super.onCreate(savedInstanceState);\n        registerPlugin(FirebaseAuthenticationPlugin.class);\n    }")
-with open(path, "w") as f:
-    f.write(content)
-'
+            sed -i '/import com.getcapacitor.BridgeActivity;/a import android.os.Bundle;\nimport dev.robingenz.capacitorjs.plugins.firebase.authentication.FirebaseAuthenticationPlugin;' "$MAIN_ACTIVITY"
+            sed -i '/public class MainActivity extends BridgeActivity {/a \    @Override\n    public void onCreate(Bundle savedInstanceState) {\n        super.onCreate(savedInstanceState);\n        registerPlugin(FirebaseAuthenticationPlugin.class);\n    }' "$MAIN_ACTIVITY"
           fi
 
       - name: Build Debug APK with Gradle
