@@ -60,14 +60,6 @@ jobs:
             sed -i '/<application/i \    <uses-permission android:name="android.permission.CAMERA" />' "$MANIFEST"
           fi
 
-      - name: Register Firebase Authentication Plugin in MainActivity
-        run: |
-          MAIN_ACTIVITY="android/app/src/main/java/com/bhaskar18/medishelf/MainActivity.java"
-          if [ -f "$MAIN_ACTIVITY" ] && ! grep -q "FirebaseAuthenticationPlugin" "$MAIN_ACTIVITY"; then
-            sed -i '/import com.getcapacitor.BridgeActivity;/a import android.os.Bundle;\nimport dev.robingenz.capacitorjs.plugins.firebase.authentication.FirebaseAuthenticationPlugin;' "$MAIN_ACTIVITY"
-            sed -i '/public class MainActivity extends BridgeActivity {/a \    @Override\n    public void onCreate(Bundle savedInstanceState) {\n        super.onCreate(savedInstanceState);\n        registerPlugin(FirebaseAuthenticationPlugin.class);\n    }' "$MAIN_ACTIVITY"
-          fi
-
       - name: Build Debug APK with Gradle
         env:
           JAVA_HOME: ${{ steps.setup-java.outputs.JAVA_HOME }}
