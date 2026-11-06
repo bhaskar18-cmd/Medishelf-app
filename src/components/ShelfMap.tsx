@@ -6,6 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, PharmacyMap, MapMarker, Shelf } from '../db/db';
+import { compressBase64Image } from '../db/firestoreSync';
 import { Map, Upload, Plus, Trash2, Edit3, MapPin, AlertTriangle, CheckCircle2, Eye, EyeOff, X, ArrowLeft, Pill } from 'lucide-react';
 
 interface ShelfMapProps {
@@ -189,8 +190,10 @@ export const ShelfMap: React.FC<ShelfMapProps> = ({ highlightedShelfId, highligh
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = () => {
-        setMapImage(reader.result as string);
+      reader.onload = async () => {
+        const base64 = reader.result as string;
+        const compressed = await compressBase64Image(base64, 800, 0.6);
+        setMapImage(compressed);
       };
       reader.readAsDataURL(file);
     }

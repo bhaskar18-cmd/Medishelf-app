@@ -320,7 +320,7 @@ export const SellMedicine: React.FC<SellMedicineProps> = ({ onSuccess }) => {
                     <div>
                       <span className="font-bold text-slate-900 block">{item.medicineName}</span>
                       <span className="text-slate-500">Batch: {item.batchNumber} • Shelf: {item.shelfId}</span>
-                      <span className="text-teal-700 font-semibold block mt-1">{item.quantity} units @ ${item.unitPrice.toFixed(2)}</span>
+                      <span className="text-teal-700 font-semibold block mt-1">{item.quantity} units @ ₹{item.unitPrice.toFixed(2)}</span>
                     </div>
                     <button
                       onClick={() => handleRemoveCartItem(idx)}
@@ -337,7 +337,7 @@ export const SellMedicine: React.FC<SellMedicineProps> = ({ onSuccess }) => {
           <div className="pt-4 border-t border-slate-200 space-y-4">
             <div className="flex items-center justify-between text-base font-bold text-slate-900">
               <span>Total Amount:</span>
-              <span className="text-teal-700">${totalAmount.toFixed(2)}</span>
+              <span className="text-teal-700">₹{totalAmount.toFixed(2)}</span>
             </div>
 
             <button

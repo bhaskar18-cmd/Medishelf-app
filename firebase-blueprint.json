@@ -1,0 +1,164 @@
+{
+  "entities": {
+    "Shop": {
+      "title": "Shop",
+      "description": "Shop configuration details",
+      "type": "object",
+      "properties": {
+        "shopName": { "type": "string", "maxLength": 100 },
+        "address": { "type": "string", "maxLength": 200 },
+        "phone": { "type": "string", "maxLength": 50 },
+        "defaultLowStockThreshold": { "type": "number" },
+        "pinLock": { "type": "string", "maxLength": 50 },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["shopName", "defaultLowStockThreshold", "createdAt", "updatedAt"]
+    },
+    "Shelf": {
+      "title": "Shelf",
+      "description": "Shelf location record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 50, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "shelfCode": { "type": "string", "maxLength": 50 },
+        "areaCode": { "type": "string", "maxLength": 50 },
+        "description": { "type": "string", "maxLength": 200 },
+        "positionX": { "type": "number" },
+        "positionY": { "type": "number" },
+        "width": { "type": "number" },
+        "height": { "type": "number" },
+        "isAvailable": { "type": "boolean" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "shelfCode", "areaCode", "isAvailable", "createdAt", "updatedAt"]
+    },
+    "Medicine": {
+      "title": "Medicine",
+      "description": "Medicine item master record",
+      "type": "object",
+      "properties": {
+        "brandName": { "type": "string", "maxLength": 100 },
+        "genericName": { "type": "string", "maxLength": 100 },
+        "strength": { "type": "string", "maxLength": 50 },
+        "dosageForm": { "type": "string", "maxLength": 50 },
+        "manufacturer": { "type": "string", "maxLength": 100 },
+        "barcode": { "type": "string", "maxLength": 100 },
+        "notes": { "type": "string", "maxLength": 500 },
+        "lowStockThreshold": { "type": "number" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["brandName", "genericName", "dosageForm", "barcode", "createdAt", "updatedAt"]
+    },
+    "StockBatch": {
+      "title": "StockBatch",
+      "description": "Batch of stock for a medicine on a shelf",
+      "type": "object",
+      "properties": {
+        "medicineId": { "type": "string" },
+        "shelfId": { "type": "string" },
+        "batchNumber": { "type": "string", "maxLength": 50 },
+        "quantity": { "type": "number" },
+        "unit": { "type": "string", "maxLength": 50 },
+        "manufacturingDate": { "type": "string" },
+        "expiryDate": { "type": "string" },
+        "expiryPrecision": { "type": "string", "enum": ["exact", "month"] },
+        "purchasePrice": { "type": "number" },
+        "sellingPrice": { "type": "number" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["medicineId", "shelfId", "batchNumber", "quantity", "unit", "expiryDate", "expiryPrecision", "createdAt", "updatedAt"]
+    },
+    "InventoryTransaction": {
+      "title": "InventoryTransaction",
+      "description": "Log of inventory changes",
+      "type": "object",
+      "properties": {
+        "transactionType": { "type": "string", "enum": ["stock_in", "sale", "return", "damaged", "expired", "adjustment"] },
+        "medicineId": { "type": "string" },
+        "batchId": { "type": "string" },
+        "shelfId": { "type": "string" },
+        "quantityChange": { "type": "number" },
+        "timestamp": { "type": "string" },
+        "reason": { "type": "string", "maxLength": 200 },
+        "referenceId": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["transactionType", "medicineId", "quantityChange", "timestamp"]
+    },
+    "Sale": {
+      "title": "Sale",
+      "description": "Sales transaction record",
+      "type": "object",
+      "properties": {
+        "saleNumber": { "type": "string", "maxLength": 50 },
+        "totalAmount": { "type": "number" },
+        "timestamp": { "type": "string" },
+        "status": { "type": "string", "enum": ["completed", "cancelled"] }
+      },
+      "required": ["saleNumber", "totalAmount", "timestamp", "status"]
+    },
+    "PharmacyMap": {
+      "title": "PharmacyMap",
+      "description": "Floor plan map image",
+      "type": "object",
+      "properties": {
+        "mapName": { "type": "string", "maxLength": 100 },
+        "areaCode": { "type": "string", "maxLength": 50 },
+        "image": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["mapName", "areaCode", "createdAt", "updatedAt"]
+    },
+    "MapMarker": {
+      "title": "MapMarker",
+      "description": "Position marker for a shelf on a map",
+      "type": "object",
+      "properties": {
+        "mapId": { "type": "string" },
+        "shelfId": { "type": "string" },
+        "positionX": { "type": "number" },
+        "positionY": { "type": "number" },
+        "isVisible": { "type": "boolean" }
+      },
+      "required": ["mapId", "shelfId", "positionX", "positionY", "isVisible"]
+    }
+  },
+  "firestore": {
+    "/shops/{shopId}": {
+      "schema": { "$ref": "#/entities/Shop" },
+      "description": "Shop configuration"
+    },
+    "/shelves/{shelfId}": {
+      "schema": { "$ref": "#/entities/Shelf" },
+      "description": "Shelf records"
+    },
+    "/medicines/{medicineId}": {
+      "schema": { "$ref": "#/entities/Medicine" },
+      "description": "Medicine master catalog"
+    },
+    "/batches/{batchId}": {
+      "schema": { "$ref": "#/entities/StockBatch" },
+      "description": "Stock inventory batches"
+    },
+    "/transactions/{transactionId}": {
+      "schema": { "$ref": "#/entities/InventoryTransaction" },
+      "description": "Audit log of inventory transactions"
+    },
+    "/sales/{saleId}": {
+      "schema": { "$ref": "#/entities/Sale" },
+      "description": "Completed sales"
+    },
+    "/maps/{mapId}": {
+      "schema": { "$ref": "#/entities/PharmacyMap" },
+      "description": "Pharmacy floor maps"
+    },
+    "/mapMarkers/{markerId}": {
+      "schema": { "$ref": "#/entities/MapMarker" },
+      "description": "Shelf map position markers"
+    }
+  }
+}

@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { db, Shelf } from '../db/db';
+import { compressBase64Image } from '../db/firestoreSync';
 import { initializeDefaultShelves } from '../db/seed';
 import { Shield, Upload, Map, CheckCircle2, Plus, Trash2, AlertCircle, Sparkles } from 'lucide-react';
 
@@ -96,8 +97,10 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = () => {
-        setMapImage(reader.result as string);
+      reader.onload = async () => {
+        const base64 = reader.result as string;
+        const compressed = await compressBase64Image(base64, 800, 0.6);
+        setMapImage(compressed);
       };
       reader.readAsDataURL(file);
     }

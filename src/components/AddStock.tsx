@@ -335,13 +335,13 @@ export const AddStock: React.FC<AddStockProps> = ({ initialBarcode, onOpenScanne
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Selling Price (Optional)</label>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Selling Price (₹) (Optional)</label>
                 <input
                   type="number"
                   step="0.01"
                   value={sellingPrice}
                   onChange={(e) => setSellingPrice(Number(e.target.value))}
-                  placeholder="0.00"
+                  placeholder="₹ 0.00"
                   className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>

@@ -6,6 +6,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from './db/db';
+import { auth } from './db/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import { initFirestoreSync, seedFirestoreFromDexieIfNeeded } from './db/firestoreSync';
+import { AuthModal } from './components/AuthModal';
 import { SetupWizard } from './components/SetupWizard';
 import { Navbar } from './components/Navbar';
 import { Dashboard } from './components/Dashboard';
@@ -22,6 +26,21 @@ import { ScannerModal } from './components/ScannerModal';
 import { SettingsModal } from './components/SettingsModal';
 
 export default function App() {
+  const [user, setUser] = useState<any>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      setUser(firebaseUser);
+      setAuthLoading(false);
+      if (firebaseUser) {
+        await seedFirestoreFromDexieIfNeeded();
+        initFirestoreSync();
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
   const shop = useLiveQuery(() => db.shops.toCollection().first(), []) || undefined;
   const isShopConfigured = shop !== undefined;
 
@@ -72,6 +91,18 @@ export default function App() {
       }
     }
   };
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <AuthModal onSignedIn={() => {}} />;
+  }
 
   if (!isShopConfigured) {
     return <SetupWizard onComplete={() => window.location.reload()} />;

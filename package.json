@@ -25,6 +25,7 @@
     "dexie-react-hooks": "^4.4.0",
     "dotenv": "^17.2.3",
     "express": "^4.21.2",
+    "firebase": "^13.1.0",
     "html5-qrcode": "^2.3.8",
     "lucide-react": "^0.546.0",
     "motion": "^12.23.24",
