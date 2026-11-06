@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "186012881939",
+    "project_id": "medishelf-177b3",
+    "storage_bucket": "medishelf-177b3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:186012881939:android:ee514fa88835eabc919be6",
+        "android_client_info": {
+          "package_name": "com.bhaskar18.medishelf"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxZaLKlgT0MDN42KkdRv3x-MrqrJWlGRs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -15,6 +15,7 @@
     "android:build-debug": "npm run build && npx cap sync android && cd android && ./gradlew assembleDebug"
   },
   "dependencies": {
+    "@capacitor-firebase/authentication": "^8.6.0",
     "@capacitor/android": "^8.5.3",
     "@capacitor/core": "^8.5.3",
     "@google/genai": "^2.4.0",

@@ -5,7 +5,9 @@
 
 import React, { useState } from 'react';
 import { auth, googleProvider, handleFirestoreError, OperationType } from '../db/firebase';
-import { signInWithPopup } from 'firebase/auth';
+import { signInWithPopup, signInWithCredential, GoogleAuthProvider } from 'firebase/auth';
+import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
+import { Capacitor } from '@capacitor/core';
 import { Shield, Lock, AlertCircle } from 'lucide-react';
 
 interface AuthModalProps {
@@ -20,18 +22,39 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onSignedIn }) => {
     setLoading(true);
     setErrorMsg('');
     try {
-      await signInWithPopup(auth, googleProvider);
+      if (Capacitor.isNativePlatform()) {
+        const result = await FirebaseAuthentication.signInWithGoogle();
+        if (result.credential?.idToken) {
+          const credential = GoogleAuthProvider.credential(result.credential.idToken);
+          await signInWithCredential(auth, credential);
+        } else {
+          throw new Error('Google Sign-In did not return a valid ID token.');
+        }
+      } else {
+        await signInWithPopup(auth, googleProvider);
+      }
       onSignedIn();
     } catch (error: any) {
-      if (error?.code === 'auth/popup-closed-by-user') {
-        setErrorMsg('Sign-in popup was closed. Please try again when ready.');
+      if (
+        error?.code === 'auth/popup-closed-by-user' ||
+        error?.message?.includes('cancelled') ||
+        error?.message?.includes('canceled') ||
+        error?.message?.includes('Sign in action cancelled')
+      ) {
+        setErrorMsg('Sign-in was cancelled. Please try again when ready.');
         return;
       }
       try {
         handleFirestoreError(error, OperationType.WRITE, 'auth');
       } catch (e: any) {
-        const info = JSON.parse(e.message);
-        setErrorMsg(info.error || 'Authentication failed');
+        let errStr = 'Authentication failed';
+        try {
+          const info = JSON.parse(e.message);
+          errStr = info.error || errStr;
+        } catch {
+          errStr = error?.message || errStr;
+        }
+        setErrorMsg(errStr);
       }
     } finally {
       setLoading(false);
