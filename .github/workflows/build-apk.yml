@@ -60,6 +60,14 @@ jobs:
             sed -i '/<application/i \    <uses-permission android:name="android.permission.CAMERA" />' "$MANIFEST"
           fi
 
+      - name: Build Debug APK with Gradle
+        env:
+          JAVA_HOME: ${{ steps.setup-java.outputs.JAVA_HOME }}
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
       - name: Generate Android Signing Report
         env:
           JAVA_HOME: ${{ steps.setup-java.outputs.JAVA_HOME }}
@@ -71,14 +79,6 @@ jobs:
           echo "=================================================="
           ./gradlew :app:signingReport
           echo "=================================================="
-
-      - name: Build Debug APK with Gradle
-        env:
-          JAVA_HOME: ${{ steps.setup-java.outputs.JAVA_HOME }}
-        run: |
-          cd android
-          chmod +x gradlew
-          ./gradlew assembleDebug
 
       - name: Upload Debug APK Artifact
         uses: actions/upload-artifact@v4
