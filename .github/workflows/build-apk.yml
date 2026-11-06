@@ -60,6 +60,14 @@ jobs:
             sed -i '/<application/i \    <uses-permission android:name="android.permission.CAMERA" />' "$MANIFEST"
           fi
 
+      - name: Generate Android Signing Report
+        env:
+          JAVA_HOME: ${{ steps.setup-java.outputs.JAVA_HOME }}
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew signingReport
+
       - name: Build Debug APK with Gradle
         env:
           JAVA_HOME: ${{ steps.setup-java.outputs.JAVA_HOME }}
